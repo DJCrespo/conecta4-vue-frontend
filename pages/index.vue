@@ -7,7 +7,7 @@
     <div class="card-content">
       <div class="columns">
         <div class="column has-text-centered">
-            <nuxt-link to="board">
+            <nuxt-link to="register">
               <div class="card">
               <div class="card-content">
                   <h1 class="title">1 vs 1</h1>
@@ -20,7 +20,7 @@
             <div class="card">
               <div class="card-content">
                   <h1 class="title">1 vs IA</h1>
-                  <span class="tag is-warning">Proximamente</span>
+                  <span class="tag is-warning">Próximamente</span>
                 </div>
             </div>
           </div>
