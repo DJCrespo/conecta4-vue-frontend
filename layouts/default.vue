@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav
-      class="navbar header has-shadow is-primary"
+      class="navbar header has-shadow"
       role="navigation"
       aria-label="main navigation"
     >
@@ -11,7 +11,7 @@
           href="/"
         >
           <img
-            src="~assets/buefy.png"
+            src="~assets/connect4-logo.png"
             alt="Buefy"
             height="28"
           >
@@ -59,12 +59,12 @@ export default {
     return {
       items: [
         {
-          title: 'Home',
+          title: 'Bienvenido',
           icon: 'home',
           to: { name: 'index' }
         },
         {
-          title: 'Inspire',
+          title: 'Puntuaciones',
           icon: 'lightbulb',
           to: { name: 'inspire' }
         }
