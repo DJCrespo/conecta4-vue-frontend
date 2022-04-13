@@ -1,5 +1,5 @@
 <template>
-    
+    <disc-item></disc-item>
 </template>
 
 <script>
