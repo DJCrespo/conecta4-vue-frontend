@@ -45,8 +45,10 @@ export default {
       dimension: { x: 7, y: 6 },
       player: 0,
       boardConst: null,
+      turn: 0,
       winningDiscs: null,
       playerNames: ["orange", "blue"],
+      playersId: {},
       modalOpen: false,
       winner: null,
     };
@@ -66,7 +68,7 @@ export default {
       );
       this.boardConst = correctedArray;
 
-      // switch player
+      // Cambiar de jugador
       this.player = (this.player + 1) % 2;
       const result = this.checkWinCondition(
         this.boardConst,
@@ -74,7 +76,7 @@ export default {
         this.dimension.y
       );
 
-      // what to do when win happened
+      // Si un jugador gana
       if (result.win) {
         result.discs.forEach((d) => {
           Vue.set(this.winningDiscs[d.row], d.col, true);
