@@ -1,5 +1,15 @@
 <template>
   <div>
+
+    <b-loading :is-full-page="isFullPage" v-model="loading" :can-cancel="false">
+      <b-icon
+        pack="fas"
+        icon="sync-alt"
+        size="is-large"
+        custom-class="fa-spin"
+      ></b-icon>
+    </b-loading>
+
     <div class="container has-text-centered">
       <br />
       <div class="columns">
@@ -18,28 +28,51 @@
 
     <div class="container">
       <div class="columns">
-        <div class="column is-8 is-offset-2">
+        <div class="column is-6 is-offset-3">
           <div class="card">
             <div class="card-content">
               <validation-observer ref="observer" v-slot="{ handleSubmit }">
                 
-                <BInputWithValidation
-                    v-model="form.name"
-                    type="text"
-                    label-position="on-border"
-                    name="Nombre"
-                    placeholder="Ingresa tu nombre"
-                    label="Nombre"
-                />
+                <div class="columns">
+                  <div class="column">
+                    <BInputWithValidation
+                      v-model="form1.name"
+                      required
+                      type="text"
+                      label-position="on-border"
+                      name="Nombre"
+                      placeholder="Ingresa tu nombre"
+                      label="Jugador 1"
+                    />
+                  </div>
+                  <div class="column">
+                    <BInputWithValidation
+                      v-model="form2.name"
+                      required
+                      type="text"
+                      label-position="on-border"
+                      name="Nombre"
+                      placeholder="Ingresa tu nombre"
+                      label="Jugador 2"
+                    />
+                  </div>
+                </div>
 
-                <b-button
-                  type="is-success"
-                  native-type="submit"
-                  outlined
-                  rounded
-                  :loading="loading"
-                  @click="handleSubmit(submit)"
-                />
+                <div class="columns">
+                  <div class="column has-text-centered">
+                    <b-button
+                    size="is- "
+                      type="is-success"
+                      native-type="submit"
+                      outlined
+                      rounded
+                      :loading="loading"
+                      @click="handleSubmit(submit)"
+                    >
+                      ¡Comenzar!
+                    </b-button>
+                  </div>
+                </div>
               </validation-observer>
             </div>
           </div>
@@ -57,18 +90,50 @@ export default {
     name: 'register',
     data () {
         return {
-            form: {},
-            success: false
+            form1: {},
+            form2: {},
+            success: false,
+            loading: false,
+            isFullPage: true
         }
     },
+    created() {
+      this.resetForms()
+    },
     methods: {
-        resetForm () {
-            this.form = {
+        resetForms () {
+            this.form1 = {
+                name: ''
+            }
+            this.form2 = {
                 name: ''
             }
         },
-        handleSubmit () {
-
+        async submit () {
+          this.form1.color_disc = 'yellow'
+          this.form2.color_disc = 'red'
+          try {
+            this.loading = true
+            console.log('player 1')
+            const res1 = await this.$store.dispatch('modules/users/createUser', {
+              data: this.form1
+            })
+            console.log('player 2')
+            const res2 = await this.$store.dispatch('modules/users/createUser', {
+              data: this.form2
+            })
+            console.log(res1)
+            console.log(res2)
+            this.loading = false
+            this.navigateTo()
+          } catch (error) {
+            console.log(error)
+          } finally {
+            this.loading = false
+          }
+        },
+        navigateTo () {
+          this.$router.push({path: '/board'})
         }
     }
 }

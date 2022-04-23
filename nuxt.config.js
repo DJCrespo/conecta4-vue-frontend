@@ -25,7 +25,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    {src: '~/plugins/vee-validate.js', mode: 'client'}
+    {src: '~/plugins/vee-validate.js', mode: 'client'},
+    {src: '~/plugins/vue-swal.js', mode: 'client'}
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -43,8 +44,18 @@ export default {
     'nuxt-buefy',
   ],
 
+  env: {
+    version : process.env.VERSION || '0.0.1',
+    baseUrl : process.env.API || 'http://localhost:3300/api'
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ['vee-validate/dist/rules']
+    transpile: ['vee-validate/dist/rules'],
+    extend: function(config, {isDev, isClient}) {
+      config.node = {
+        fs: "empty"
+      }
+    }
   }
 }
