@@ -109,6 +109,12 @@ export default {
                 name: ''
             }
         },
+        successMessage () {
+          this.$swal({
+            title: '¿Listos?',
+            button: "¡A jugar!"
+          })
+        },
         async submit () {
           this.form1.color_disc = 'yellow'
           this.form2.color_disc = 'red'
@@ -122,9 +128,20 @@ export default {
             const res2 = await this.$store.dispatch('modules/users/createUser', {
               data: this.form2
             })
-            console.log(res1)
-            console.log(res2)
+            console.log(res1.data)
+            console.log(res2.data)
+            const user1 = {
+              name: this.form1.name,
+              id: res1.data
+            }
+            const user2 = {
+              name: this.form2.name,
+              id: res2.data
+            }
+            await this.$cookies.set('user1', user1)
+            await this.$cookies.set('user2', user2)
             this.loading = false
+            this.successMessage()
             this.navigateTo()
           } catch (error) {
             console.log(error)
@@ -132,8 +149,9 @@ export default {
             this.loading = false
           }
         },
-        navigateTo () {
-          this.$router.push({path: '/board'})
+        navigateTo (id1, id2) {
+          console.log(id1)
+          this.$router.push({ path: '/board' })
         }
     }
 }

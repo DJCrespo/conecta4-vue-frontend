@@ -42,6 +42,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/buefy
     'nuxt-buefy',
+    'cookie-universal-nuxt',
   ],
 
   env: {

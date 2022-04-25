@@ -1,10 +1,9 @@
 <template>
   <div id="app">
-    <h1>connect 4</h1>
+    <!-- Jugador -->
+    <div class="header">Es el turno de: {{ playerNames[player] }}</div>
 
-    <div class="header">{{ playerNames[player] }}'s turn</div>
-
-    <!-- the bord -->
+    <!-- Tablero -->
     <table>
       <tr v-for="(row, ridx) in boardConst">
         <td v-for="(col, cidx) in row">
@@ -19,13 +18,22 @@
       </tr>
     </table>
 
-    <!-- a super simple modal -->
-    <div v-if="modalOpen">
-      <div class="backdrop"></div>
-      <div class="modal">
-        <div class="modalcontent">
-          {{ winner }} wins!
-          <button v-on:click="closeModal">ok</button>
+    <!-- Puntuación -->
+    <div class="score pt-3">
+      <div class="card">
+        <div class="card-content">
+          <div class="columns">
+            <div class="column">
+              <p class="title">{{this.player1.name}}</p>
+              <br>
+              <p class="subtitle">{{this.player1.score}}</p>
+            </div>
+            <div class="column">
+              <p class="title">{{this.player2.name}}</p>
+              <br>
+              <p class="subtitle">{{this.player2.score}}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -33,13 +41,8 @@
 </template>
 
 <script>
-import Vue from "vue";
-
 export default {
   name: "board",
-  props: {
-      players: Object
-  },
   data() {
     return {
       dimension: { x: 7, y: 6 },
@@ -47,17 +50,51 @@ export default {
       boardConst: null,
       turn: 0,
       winningDiscs: null,
-      playerNames: ["orange", "blue"],
+      playerNames: [],
       playersId: {},
       modalOpen: false,
       winner: null,
+      player1: {},
+      player2: {}
     };
   },
   mounted() {
-    this.initializeBoard();
+    this.initializeBoard()
+  },
+  async created () {
+    this.player1 = this.$cookies.get('user1')
+    this.player1.score = 0
+    this.player2 = this.$cookies.get('user2')
+    this.player2.score = 0
+    this.playerNames.push(this.player1.name)
+    this.playerNames.push(this.player2.name)
   },
   methods: {
-    handleDisc(e) {
+    setNames () {
+      const names = [
+        this.player1.name,
+        this.player2.name
+      ]
+      return names
+    },
+    winMessage (winner) {
+      this.$swal({
+        title: '¡Has ganado!',
+        text: 'El jugador ' + winner +  ' ha ganado la partida',
+        button: false,
+        timer: 3000
+      })
+    },
+    switchPlayerMessage () {
+      this.$swal({
+        title: 'Cambio de jugador...',
+        text: 'Intercambiando fichas...',
+        button: false,
+        icon: 'warning',
+        timer: 3000
+      })
+    },
+    async handleDisc(e) {
       // reconoce la columna donde el jugador desea colocar la pieza, una vez colocada cambia de jugador
       this.boardConst[e.ridx][e.cidx] = this.player;
       console.log(this.boardConst);
@@ -78,17 +115,20 @@ export default {
 
       // Si un jugador gana
       if (result.win) {
-        result.discs.forEach((d) => {
-          Vue.set(this.winningDiscs[d.row], d.col, true);
-        });
+        console.log(result)
         this.winner = this.playerNames[result.player];
-        this.modalOpen = true;
+        if(result.player == 0) {
+          this.player1.score += 1
+        } else {
+          this.player2.score += 1
+        }
+        console.log(this.player1)
+        this.winMessage(this.winner)
+        await new Promise(r => setTimeout(r, 1500));
+        await this.switchPlayerMessage()
         this.player = (result.player + 1) % 2;
+        this.initializeBoard()
       }
-    },
-    closeModal() {
-      this.initializeBoard();
-      this.modalOpen = false;
     },
     initializeBoard() {
       let res = [],
@@ -269,9 +309,9 @@ export default {
 table,
 th,
 td {
-  border: 2px solid #b3b3b3;
+  border: 2px solid #0066CC;
   border-collapse: collapse;
-  background-color: lightgrey;
+  background-color: #0066CC;
 }
 table {
   margin: auto;
@@ -293,8 +333,8 @@ table {
 
 .backdrop {
   position: absolute;
-  height: 100vh;
-  width: 100vw;
+  height: 50vh;
+  width: 50vw;
   background-color: lightgrey;
   opacity: 0.5;
   top: 0;

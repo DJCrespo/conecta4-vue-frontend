@@ -16,7 +16,7 @@ export default {
   props: ['state', 'win', 'index'],
   data () {
     return {
-      colors: ['#febf33', '#344e5c']
+      colors: ['#CC3333', '#FFFF33']
     }
   },
   methods: {
@@ -32,18 +32,18 @@ export default {
 <style>
   .tile {
     border-radius: 3.5vw;
-    height: 7vw;
-    width: 7vw;
-    max-height: 35px;
-    max-width: 35px;
+    height: 10vw;
+    width: 10vw;
+    max-height: 50px;
+    max-width: 50px;
     cursor: pointer;
   }
   .tileclicked {
     border-radius: 3.5vw;
-    height: 7vw;
-    width: 7vw;
-    max-height: 35px;
-    max-width: 35px;
+    height: 8vw;
+    width: 8vw;
+    max-height: 50px;
+    max-width: 50px;
   }
 
 </style>
