@@ -1,54 +1,28 @@
 <template>
   <div>
-    <nav
-      class="navbar header has-shadow"
-      role="navigation"
-      aria-label="main navigation"
-    >
-      <div class="navbar-brand">
-        <a
-          class="navbar-item"
-          href="/"
-        >
-          <img
-            src="~assets/connect4-logo.png"
-            alt="Buefy"
-            height="28"
-          >
-        </a>
+  <b-navbar>
+    <template #brand>
+      <b-navbar-item tag="router-link" :to="{ path: '/' }">
+        <img src="~assets/connect4-logo.png" alt="Conecta 4">
+      </b-navbar-item>
+    </template>
 
-        <div class="navbar-burger">
-          <span />
-          <span />
-          <span />
-        </div>
-      </div>
-    </nav>
+    <template #end>
+      <b-navbar-item tag="router-link" :to="{ path: '/' }">
+        Inicio
+      </b-navbar-item>
+      <b-navbar-item tag="router-link" :to="{ path: '/score' }">
+        Puntuación global
+      </b-navbar-item>
+    </template>
+  </b-navbar>
 
     <section class="main-content columns">
-      <aside class="column is-2 section">
-        <p class="menu-label is-hidden-touch">
-          General
-        </p>
-        <ul class="menu-list">
-          <li
-            v-for="(item, key) of items"
-            :key="key"
-          >
-            <NuxtLink
-              :to="item.to"
-              exact-active-class="is-active"
-            >
-              <b-icon :icon="item.icon" /> {{ item.title }}
-            </NuxtLink>
-          </li>
-        </ul>
-      </aside>
-
-      <div class="container column is-10">
+      <div class="container column is-8 is-offset-2">
         <Nuxt />
       </div>
     </section>
+
   </div>
 </template>
 
@@ -66,7 +40,7 @@ export default {
         {
           title: 'Puntuaciones',
           icon: 'lightbulb',
-          to: { name: 'inspire' }
+          to: { name: 'score' }
         }
       ]
     }
