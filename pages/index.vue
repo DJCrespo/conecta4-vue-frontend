@@ -1,7 +1,7 @@
 <template>
 <div>
   <br>
-  <h1 class="title">Modos de juego</h1>
+  <h1 class="title has-text-centered">Modos de juego</h1>
 
   <div class="card">
     <div class="card-content">
@@ -17,12 +17,14 @@
             </nuxt-link>
           </div>
           <div class="column has-text-centered">
-            <div class="card">
+             <nuxt-link to="register">
+              <div class="card">
               <div class="card-content">
                   <h1 class="title">1 vs IA</h1>
-                  <span class="tag is-warning">Próximamente</span>
+                  <span class="tag is-warning">BETA</span>
                 </div>
             </div>
+            </nuxt-link>
           </div>
       </div>
     </div>

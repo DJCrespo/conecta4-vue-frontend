@@ -27,23 +27,12 @@
 </template>
 
 <script>
+import { customIconConfig } from '../utils/icons'
+
 export default {
   name: 'DefaultLayout',
-  data () {
-    return {
-      items: [
-        {
-          title: 'Bienvenido',
-          icon: 'home',
-          to: { name: 'index' }
-        },
-        {
-          title: 'Puntuaciones',
-          icon: 'lightbulb',
-          to: { name: 'score' }
-        }
-      ]
-    }
+  created () {
+    this.$buefy.config.setOptions(customIconConfig)
   }
 }
 </script>

@@ -1,21 +1,38 @@
 <template>
+<div>
   <section class="section">
-    <h2 class="title is-3 has-text-grey">
-      "Just start  <b-icon
-        icon="rocket"
-        size="is-large"
-      />"
-    </h2>
-    <h3 class="subtitle is-6 has-text-grey">
-      Author: <a href="https://github.com/anteriovieira">
-        Antério Vieira
-      </a>
-    </h3>
+    <b-table></b-table>
   </section>
+
+  <b-loading :is-full-page="true" v-model="loading" :can-cancel="true">
+  </b-loading>
+</div>
 </template>
 
 <script>
 export default {
-  name: 'score'
+  name: 'score',
+  data () {
+    return {
+      loading: false
+    }
+  },
+  created () {
+    this.getUsers()
+  },
+  methods: {
+    async getUsers () {
+      try {
+        this.loading = true
+        const res = await this.$store.dispatch('modules/users/getUsers')
+        console.log(res)
+        this.loading = false
+      } catch (error) {
+        console.log(error)
+      } finally {
+        this.loading = false
+      }
+    }
+  },
 }
 </script>
