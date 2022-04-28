@@ -17,7 +17,7 @@
             </nuxt-link>
           </div>
           <div class="column has-text-centered">
-             <nuxt-link to="register">
+             <nuxt-link to="register-ia">
               <div class="card">
               <div class="card-content">
                   <h1 class="title">1 vs IA</h1>
