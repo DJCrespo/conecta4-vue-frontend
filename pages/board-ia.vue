@@ -1,12 +1,12 @@
 <template>
   <div id="app">
     <!-- Jugador -->
-    <div class="header">Estas Jugando con una IA</div>
+    <div class="header">Estás Jugando con una IA</div>
 
     <!-- Tablero -->
     <table>
-      <tr v-for="(row, ridx) in boardConst">
-        <td v-for="(col, cidx) in row">
+      <tr v-for="(row, ridx) in boardConst" :key="ridx">
+        <td v-for="(col, cidx) in row" :key="cidx">
           <disc-item
             v-bind:state="col"
             v-bind:win="winningDiscs[ridx][cidx]"
@@ -98,14 +98,12 @@ export default {
     },
     async handleDisc(e) {
       // reconoce la columna donde el jugador desea colocar la pieza, una vez colocada cambia de jugador
-      this.boardConst[e.ridx][e.cidx] = this.player;
-      console.log(e)
+      this.boardConst[e.ridx][e.cidx] = this.player
       const correctedArray = this.applyGravity(
         this.boardConst,
         this.dimension.x,
         this.dimension.y
       )
-      console.log(correctedArray)
       this.boardConst = correctedArray;
 
       if(this.playerNames[this.player] != 'IA') {
@@ -128,8 +126,8 @@ export default {
             board: this.boardConst,
             player: this.player
           }
+          /*
           const res = this.blockUser(this.ultimateMov)
-          console.log(res)
           this.boardConst[0][res] = this.player
           const correctedArray = this.applyGravity(
             this.boardConst,
@@ -137,6 +135,7 @@ export default {
             this.dimension.y
           )
           this.boardConst = correctedArray
+          */
           this.heuristicPyramid(data)
           this.player = (this.player + 1) % 2;
           const result = this.checkWinCondition(
@@ -160,7 +159,12 @@ export default {
             this.initializeBoard()
           }
         } else {
-          this.colocateDisk()
+          console.log('no danger')
+          const data = {
+            board: this.boardConst,
+            player: this.player
+          }
+          this.heuristicPyramid(data)
           this.player = (this.player + 1) % 2;
           const result = this.checkWinCondition(
             this.boardConst,
@@ -376,17 +380,33 @@ export default {
       return res;
     },
     heuristicPyramid (data) {
-      console.log(data)
       const board = data.board
-      if(board[5][0] == data.player && board[5][6] == data.player) {
-        console.log('posible ganar')
+      if(board[5][0] == null && board[5][6] == null) {
+        let y = Math.random() >= .5
+        this.colocateDisk(y)
+      } else if (board[5][0] == null || board[5][6] == null) {
+        let nextInstruct = Math.random() >= .5
+        if (nextInstruct) {
+          console.log('ficha colocada al otro lado')
+          if(!board[5][0]) {
+            this.colocateDisk(true)
+          } else {
+            this.colocateDisk(false)
+          }
+        } else {
+          const ultPossition = this.checkIa(data)
+          console.log('hola1')
+          console.log(ultPossition)
+          this.colocateDisk(ultPossition.nextPossition)
+        }
+      } else {
+        const ultPossition = this.checkIa(data)
+        console.log('hola2')
+        console.log(ultPossition)
+        this.colocateDisk(ultPossition.nextPossition)
       }
     },
-    heuristicBlock () {
-      console.log('hola')
-    },
     checkOpponent (data) {
-      console.log(data)
       const opponent = this.player % 2
       const board = data.board
       const y = data.column
@@ -419,20 +439,132 @@ export default {
         }
       }
     },
-      colocateDisk () {
+    checkIa (data) {
+      const ia = this.player
+      const opponent = this.player % 2
+      const board = data.board
+      let possitions = []
+      for (let x = 5; x != -1; x--) {
+        board[x].map((element, indexY) => {
+          if (element == ia) {
+            possitions.push({
+              'coorX': x,
+              'coorY': indexY
+            })
+          }
+        })
+      }
+      let goodPossitions = {}
+      possitions.map((element) => {
+        if ((element.coorX == 5 && element.coorY == 0) || (element.coorX == 5 && element.coorY == 6)) {
+          let newX0 = 0
+          let newY0 = 0
+          let count = 1
+          switch (element.coorY) {
+            case 0:
+            console.log('entro izquierda')
+              newX0 = element.coorX - 1
+              newY0 = element.coorY + 1
+              console.log(newX0, newY0)
+              while(count < 4 && board[newX0][newY0] != opponent) {
+                if (board[newX0][newY0] == null) {
+                  if (board[newX0 + 1][newY0]) {
+                    goodPossitions = element
+                    goodPossitions.nextPossition = {
+                      fichas: count,
+                      newX: newX0,
+                      newY: newY0
+                    }
+                    count = 4
+                  } else {
+                    goodPossitions = element
+                    goodPossitions.nextPossition = {
+                      fichas: count,
+                      newX: newX0 + 1,
+                      newY: newY0
+                    }
+                    count = 4
+                  }
+                } else {
+                  newX0 += 1
+                  newY0 += 1
+                  count += 1
+                }
+              }
+              break
+            case 6:
+              console.log('entro derecha')
+              newX0 = element.coorX - 1
+              newY0 = element.coorY - 1
+              console.log(newX0, newY0)
+              while(count < 4 && board[newX0][newY0] != opponent) {
+                if (board[newX0][newY0] == null) {
+                  if (board[newX0 - 1][newY0]) {
+                    goodPossitions = element
+                    goodPossitions.nextPossition = {
+                      fichas: count,
+                      newX: newX0,
+                      newY: newY0
+                    }
+                    count = 4
+                  } else {
+                    goodPossitions = element
+                    goodPossitions.nextPossition = {
+                      fichas: count,
+                      newX: newX0 - 1,
+                      newY: newY0
+                    }
+                    count = 4
+                  }
+                } else {
+                  newX0 -= 1
+                  newY0 -= 1
+                  count += 1
+                }
+              }
+              break
+          }
+        }
+      })
+      console.log(goodPossitions.nextPossition)
+      return goodPossitions
+    },
+      colocateDisk (pos) {
         // Colocar una pieza de la IA en un lugar aleatorio
-        const y = Math.floor(Math.random() * 6)
-        console.log(y)
-        this.boardConst[0][y] = this.player
-        const correctedArray = this.applyGravity(
-        this.boardConst,
-        this.dimension.x,
-        this.dimension.y
-        )
-        this.boardConst = correctedArray
+        if (pos == true || pos == false) {
+          const possition = pos ? 0 : 6
+          this.boardConst[0][possition] = this.player
+          const correctedArray = this.applyGravity(
+          this.boardConst,
+          this.dimension.x,
+          this.dimension.y
+          )
+          this.boardConst = correctedArray
+        } else if (pos.nextPossition) {
+          const next = pos.nextPossition
+          this.boardConst[next.newX][next.newY] = this.player
+          const correctedArray = this.applyGravity(
+            this.boardConst,
+            this.dimension.x,
+            this.dimension.y
+          )
+          this.boardConst = correctedArray
+        } else {
+          let y = Math.floor(Math.random() * 6)
+          while(y === 0 || y === 6) {
+            y = Math.floor(Math.random() * 6)
+          }
+          this.boardConst[0][y] = this.player
+          const correctedArray = this.applyGravity(
+          this.boardConst,
+          this.dimension.x,
+          this.dimension.y
+          )
+          this.boardConst = correctedArray
+        }
       },
       blockUser (data) {
-        // Tratar de bloquear al usuario, depende del numero de fechas disponibles al rededor
+        // Tratar de bloquear al usuario, depende del numero de fechas disponibles alrededor
         const board = data.board
         const opponent = this.player % 2
         const y = data.column
